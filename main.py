@@ -1,6 +1,5 @@
-import heapq
 from collections import deque
-from map_util import generate_random_map, delete_map
+import heapq
 import time
 import tracemalloc
 
