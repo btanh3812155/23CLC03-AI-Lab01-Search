@@ -2,6 +2,7 @@ from collections import deque
 import heapq
 import time
 import tracemalloc
+from map_util import generate_random_map, delete_map
 
 
 # MAP PARSING
