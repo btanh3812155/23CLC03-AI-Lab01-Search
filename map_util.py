@@ -7,9 +7,11 @@ import glob
 # Utility function to make random maps
 
 def generate_random_map(filename=None, width=10, height=10, wall_prob=0.2, num_goals=1, min_cost=0, max_cost=9):
+    os.makedirs("maps", exist_ok=True)
+
     if filename is None:
         timestamp = time.strftime("%Y%m%d_%H%M%S")
-        filename = f"map_{timestamp}.txt"
+        filename = f"./maps/map_{timestamp}.txt"
 
     grid = []
 
@@ -25,7 +27,7 @@ def generate_random_map(filename=None, width=10, height=10, wall_prob=0.2, num_g
     # Add init tiles (S)
     while True:
         sx, sy = random.randint(0, width - 1), random.randint(0, height - 1)
-        if grid[sy][sx] != 'W':
+        if grid[sy][sx] != 'N':
             grid[sy][sx] = 'S'
             break
 
@@ -33,7 +35,7 @@ def generate_random_map(filename=None, width=10, height=10, wall_prob=0.2, num_g
     for _ in range(num_goals):
         while True:
             gx, gy = random.randint(0, width - 1), random.randint(0, height - 1)
-            if grid[gy][gx] not in ('S', 'G', 'W'):
+            if grid[gy][gx] not in ('S', 'G', 'N'):
                 grid[gy][gx] = 'G'
                 break
 
@@ -46,7 +48,7 @@ def generate_random_map(filename=None, width=10, height=10, wall_prob=0.2, num_g
     return os.path.abspath(filename)
 
 
-def delete_map(filename=None, all_maps=False, directory='.'):
+def delete_map(filename=None, all_maps=False, directory='./maps'):
     deleted = []
 
     if all_maps:
