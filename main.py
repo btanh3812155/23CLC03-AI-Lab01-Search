@@ -233,45 +233,57 @@ def beam_search(city_map, start, goal, beam_width=2):
     return None
 
 
-def ida_star(city_map, start, goal, max_depth=1000):
+def ida_star(city_map, start, goal):
+    # Held together with duct tape and prayers
     def heuristic(a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])  # Manhattan distance
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def search(path, g, threshold, visited):
+    def get_cost(pos):
+        x, y = pos
+        val = city_map[x][y]
+        return val if isinstance(val, (int, float)) else None
+
+    def search(path, g, threshold):
         current = path[-1]
         f = g + heuristic(current, goal)
+
         if f > threshold:
             return f, None
         if current == goal:
-            return f, path
+            return f, path.copy()
 
         min_threshold = float('inf')
+
         for neighbor in get_neighbors(current, city_map):
             if neighbor in path:
                 continue
-            cost = city_map[neighbor[0]][neighbor[1]]
-            if isinstance(cost, (int, float)):
-                visited.add(neighbor)
-                new_g = g + cost
-                t, result_path = search(path + [neighbor], new_g, threshold, visited)
-                if result_path:
-                    return t, result_path
-                if t < min_threshold:
-                    min_threshold = t
+
+            cost = get_cost(neighbor)
+            if cost is None:
+                continue
+
+            path.append(neighbor)
+            t, result = search(path, g + cost, threshold)
+            path.pop()
+
+            if result:
+                return t, result
+            if t < min_threshold:
+                min_threshold = t
+
         return min_threshold, None
 
     threshold = heuristic(start, goal)
     path = [start]
-    visited = set([start])
 
-    for _ in range(max_depth):
-        t, result = search(path, 0.0, threshold, visited)
+    while True:
+        t, result = search(path, 0, threshold)
         if result:
             return result
         if t == float('inf'):
             return None
         threshold = t
-    return None
+
 
 
 def run_with_metrics(algorithm, city_map, start, goal, **kwargs):
