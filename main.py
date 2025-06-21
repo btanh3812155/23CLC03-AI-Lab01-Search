@@ -281,7 +281,7 @@ def run_with_metrics(algorithm, city_map, start, goal, **kwargs):
     visited_set = set()
     visited_order = []
 
-    def wrapped_get_neighbors(pos):
+    def wrapped_get_neighbors(pos, city_map):
         if pos not in visited_set:
             visited_set.add(pos)
             visited_order.append(pos)
