@@ -281,7 +281,7 @@ def run_with_metrics(algorithm, city_map, start, goal, **kwargs):
     visited_set = set()
     visited_order = []
 
-    def wrapped_get_neighbors(pos):
+    def wrapped_get_neighbors(pos, city_map):
         if pos not in visited_set:
             visited_set.add(pos)
             visited_order.append(pos)
@@ -322,4 +322,29 @@ def run_with_metrics(algorithm, city_map, start, goal, **kwargs):
             "time_seconds": end_time - start_time,
             "memory_bytes": peak_mem
         }
+    
+''' 
+ ===== EXAMPLE USAGE =====
+if __name__ == "__main__":
+    # Generate a random map
+    map_file = generate_random_map(width=10, height=10, wall_prob=0.2, num_goals=2)
+    print(f"Generated map: {map_file}")
+
+    # Parse the map
+    city_map, starts, goals = parse_map(map_file)
+    print("Parsed city map:")
+    for row in city_map:
+        print(row)
+
+    # Run BFS on the first start and goal
+    start = starts[0]
+    goal = goals[0]
+    print(f"Running BFS from {start} to {goal}...")
+    result = run_with_metrics(bfs, city_map, start, goal)
+    print("BFS Result:", result)
+
+    # Clean up generated maps
+    delete_map(all_maps=True)
+    print("Deleted all generated maps.")
+'''
 
