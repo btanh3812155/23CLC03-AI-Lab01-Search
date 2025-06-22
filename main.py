@@ -243,7 +243,7 @@ def ida_star(city_map, start, goal):
         val = city_map[x][y]
         return val if isinstance(val, (int, float)) else None
 
-    def search(path, g, threshold):
+    def search(path, g, threshold, visited):
         current = path[-1]
         f = g + heuristic(current, goal)
 
@@ -255,15 +255,17 @@ def ida_star(city_map, start, goal):
         min_threshold = float('inf')
 
         for neighbor in get_neighbors(current, city_map):
-            if neighbor in path:
-                continue
-
             cost = get_cost(neighbor)
             if cost is None:
                 continue
+            if neighbor in path:
+                continue
+            if neighbor in visited and visited[neighbor] <= g + cost:
+                continue
 
+            visited[neighbor] = g + cost
             path.append(neighbor)
-            t, result = search(path, g + cost, threshold)
+            t, result = search(path, g + cost, threshold, visited)
             path.pop()
 
             if result:
@@ -277,7 +279,8 @@ def ida_star(city_map, start, goal):
     path = [start]
 
     while True:
-        t, result = search(path, 0, threshold)
+        visited = {start: 0}
+        t, result = search(path, 0, threshold, visited)
         if result:
             return result
         if t == float('inf'):
